@@ -1,23 +1,19 @@
+#In consumers.py
 from channels import Group
 
-def ws_connect(message):
-    print("Someone connected.")
-    path = message['path']                                                      # i.e. /sensor/
-    print(path)
-    if path == '/sensor/':
-        print("Adding new user to sensor group")
-        Group("sensor").add(message.reply_channel)                             # Adds user to group for broadcast
-        message.reply_channel.send({                                            # Reply to individual directly
-           "text": "You're connected to sensor group :) ",
-        })
-    else:
-        print("Strange connector!!")
+# Connected to websocket.connect
+def ws_add(message):
+   # Accept the connection
+   message.reply_channel.send({"accept": True})
+   # Add to the chat group
+   Group("chat").add(message.reply_channel)
 
+# Connected to websocket.receive
 def ws_message(message):
-    # ASGI WebSocket packet-received and send-packet message types
-    # both have a "text" key for their textual data.
-    print("Received!!" + message['text'])
+   Group("chat").send({
+       "text": "boton-%s" % message.content['text'],
+   })
 
+# Connected to websocket.disconnect
 def ws_disconnect(message):
-    print("Someone left us...")
-    Group("sensor").discard(message.reply_channel)
+   Group("chat").discard(message.reply_channel)

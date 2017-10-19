@@ -102,14 +102,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CHANNEL_LAYERS = {
- "default": {
-    "BACKEND": "asgi_redis.RedisChannelLayer",
-    "CONFIG": {
-       "hosts":[os.environ.get('REDIS_URL','redis://localhost:6379')],
- },
- 'ROUTING': 'sensor.routing.channel_routing',
- },
+    "default": {
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+        "ROUTING": "sensor.routing.channel_routing",
+    },
 }
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
